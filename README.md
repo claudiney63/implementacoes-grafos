@@ -1,4 +1,4 @@
-# implementacoes-grafos
+# Implementações dos Algoritmos de Grafos
 Implementações dos algoritmos de Prim, Kruskal e Drijkstra.
 
 ## Prim
