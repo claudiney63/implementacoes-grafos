@@ -51,7 +51,6 @@ class Grafo:
             i += 1
 
         j = 0
-
         for vertice in range(len(D)):                                                               #impressão das distâncias contidas em D (retorno da função de dijkstra)
             cont = 0
             print("\nDistancia do vertice", origem, "para o vertice", vertice, "eh", D.get(j))

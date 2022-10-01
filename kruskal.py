@@ -78,6 +78,13 @@ class Grafo:
                 self.conecSubArvore(pai, tamSubArvore, x, y)                        #faz a conexão das subárvores (trocando o pai da subárvore menor para o da subárvore maior)
                 #print(i, " interacao - aresta adicionada: ", arvoreMinima.listaDeArestas[-1])
 
+        plt.figure("Grafo Original")
+        nx.draw_networkx(G, pos = nx.spring_layout(G), with_labels = True)
+
+        plt.figure("Arvore Geradora Minima")
+        nx.draw_networkx(H, pos = nx.spring_layout(H), with_labels = True)
+
+        plt.show()
         return arvoreMinima
 
 
@@ -97,11 +104,3 @@ grafo.addAresta(4, 5, 1)
 arvoreMinima = grafo.kruskal()
 arvoreMinima.mostrarGrafo()
 #arvoreMinima.printMatriz()
-
-plt.figure("Grafo Original")
-nx.draw_networkx(G, pos = nx.spring_layout(G), with_labels = True)
-
-plt.figure("Arvore Geradora Minima")
-nx.draw_networkx(H, pos = nx.spring_layout(H), with_labels = True)
-
-plt.show()
