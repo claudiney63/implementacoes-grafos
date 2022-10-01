@@ -56,6 +56,11 @@ class Grafo:
             print("\nDistancia do vertice", origem, "para o vertice", vertice, "eh", D.get(j))
             j += 1
             print("Percurso: ", P[vertice])
+
+        plt.figure("Grafo Original")
+        nx.draw_networkx(G, pos = nx.spring_layout(G), with_labels = True)
+
+        plt.show()
                                                                   
 
 grafo = Grafo(5)
@@ -70,10 +75,6 @@ grafo.addAresta(3, 4, 2)
 #grafo.addAresta(5, 4, 10)
 grafo.dijkstra(0)
 
-plt.figure("Grafo Original")
-nx.draw_networkx(G, pos = nx.spring_layout(G), with_labels = True)
-
 # plt.figure("Arvore Geradora Minima")
 # nx.draw_networkx(H, pos = nx.spring_layout(H), with_labels = True)
 
-plt.show()
