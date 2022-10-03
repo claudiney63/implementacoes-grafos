@@ -4,85 +4,141 @@ import matplotlib.pyplot as plt
 G = nx.Graph()
 H = nx.Graph()
 
-class Grafo:
-    def __init__(self, numeroDeVertices):                                                #para gerar um novo grafo tem de passar um inteiro de parâmetro, e o inteiro vai dizer o número de vértices
-        self.numeroDeVertices = numeroDeVertices                                              #atributo do número de vértices
-        self.matrizDeAdj = [[0 for coluna in range(numeroDeVertices)]                     #inicia uma matriz de adjacência onde todos os valores são vazios, sendo que os vértices são as colunas e as fileiras
-                    for fileira in range(numeroDeVertices)]
-        self.listaDeArestas = []                                                      #ele inicia uma lista de arestas básica
 
-    def addAresta(self, vertice1, vertice2, peso):                                  #para adicionar uma nova aresta no grafo, tem de passar os dois vértices e o peso da ligação deles
-        self.matrizDeAdj[vertice1][vertice2] = peso                                  #o comando passa a aresta duas vezes para a matriz de adjacência para que ela seja simétrica, já que o grafo é não-direcionado
+class Grafo:
+    """
+    Recebe um inteiro para gerar o grafo com determinada quantidade de vertices;
+
+    Inicia uma matriz de adjacência onde todos os valores são vazios, sendo que os vértices são as colunas e as fileiras;
+
+    Adição de arestas numa Matriz de Adjacencia, e um print logo apos para mostrar o 
+    percurso de cada vertice e pesos, e a matriz;
+    """
+
+    def __init__(self, numeroDeVertices):
+        self.numeroDeVertices = numeroDeVertices
+        self.matrizDeAdj = [[0 for coluna in range(numeroDeVertices)]
+                            for fileira in range(numeroDeVertices)]
+        self.listaDeArestas = []
+
+    def addAresta(self, vertice1, vertice2, peso):
+        self.matrizDeAdj[vertice1][vertice2] = peso
         self.matrizDeAdj[vertice2][vertice1] = peso
         self.listaDeArestas.append((vertice1, vertice2, peso))
-        G.add_edge(vertice1, vertice2)
+        G.add_edge(vertice1, vertice2, weight=peso)
 
-    def mostrarGrafo(self):                                                           #eh, resolvi adicionar um comando de impressão do grafo, ele imprime a lista de arestas (com o peso de cada uma) e depois o peso total -----------
+    def mostrarGrafo(self):
         print("Lista de arestas escolhidas:  ", self.listaDeArestas)
         peso = 0
         for i in self.listaDeArestas:
-            peso+= i[2]
+            peso += i[2]
         print("Peso total: ", peso)
         print('-------------------------------------------')
         return ''
 
-    def printMatriz(self):                                                          #impressão da matriz de adjacência
+    def printMatriz(self):
         for i in range(self.numeroDeVertices):
             print(self.matrizDeAdj[i])
 
-    def encontPai(self, pai, i):                                                    #método para encontrar o pai(explicação dentre os comentários do método kruskal) de um vértice. Passa como parâmetro a lista auxiliar de pais
-        if pai[i] == i:                                                             #para quando encontra o vértice pai da subárvore e o retorna(explicação mais abaixo (dentre os comentários do método kruskal))
+    def encontPai(self, pai, i):
+        """
+        Método para encontrar o pai de 
+        um vértice. Passa como parâmetro a lista auxiliar de pais para quando encontra o 
+        vértice pai da subárvore e o retorna. De forma recursiva.
+        """
+        if pai[i] == i:
             return i
-        return self.encontPai(pai, pai[i])                                          #a função é recursiva
+        return self.encontPai(pai, pai[i])
 
-    def conecSubArvore(self, pai, tamSubArvore, x, y):                              #método utilizado para conectar subárvores diferentes (explicação mais abaixo (dentre os comentários do método kruskal))
+    def conecSubArvore(self, pai, tamSubArvore, x, y):
+        """
+        Método utilizado para conectar subárvores diferentes;
+
+        A subárvore menor vira "filha" da maior;
+
+        Caso ambas as subarvores tenham o mesmo tamanho, a primeira é escolhida automaticamente 
+        como pai da segunda e o tamanho da subárvore aumenta;
+        """
         xraiz = self.encontPai(pai, x)
         yraiz = self.encontPai(pai, y)
-        if tamSubArvore[xraiz] < tamSubArvore[yraiz]:                               #a subárvore menor vira "filha" da maior
+        if tamSubArvore[xraiz] < tamSubArvore[yraiz]:
             pai[xraiz] = yraiz
         elif tamSubArvore[xraiz] > tamSubArvore[yraiz]:
             pai[yraiz] = xraiz
-        else:                                                                       #caso ambas as subarvores tenham o mesmo tamanho, a primeira é escolhida automaticamente como pai da segunda e o tamanho da subárvore aumenta
+        else:
             pai[yraiz] = xraiz
             tamSubArvore[xraiz] += 1
 
     def kruskal(self):
-        arvoreMinima = Grafo(self.numeroDeVertices)                                     #arvoreMinima que será retornada pelo método
-        
-        i = 0                                                                       #contador
-        e = 0                                                                       #utilizado pra manter o controle do número de arestas da árvore mínima (tem de ter valor final = número de vértices -1)
+        """
+        Cria se a arvore minima inicial, com um contador para manter o controle do número de arestas
+        da arvore minima;
 
-        self.listaDeArestas = sorted(self.listaDeArestas, key=lambda item: item[2])     #ordenação das arestas do grafo de acordo com o peso (índice 2 de cada aresta)
+        Ordena então as arestas do grafo de acordo com o peso (índice 2 de cada aresta);
+
+        Para conseguir executar o método, são geradas duas listas auxiliares: 
+        pai e tamSubArvore, ambas tem o tamanho igual ao número de vértices do grafo;
+
+        A lista pai armazena dentro dos seus índices (um pra cada vértice) o vértice conectado 
+        superiormente a ele (funciona como uma lista encadeada);
+
+        A lista tamSubArvore mostra o tamanho das subarvores da qual cada vértice é pai;
+
+        Se inicia as listas auxiliares, colocando o "pai" de cada vértice como ele próprio e o tamanho de suas subárvores como 0;
+
+        A condicional necessária de restrição da árvore_mínima (num de arestas = num de vértices -1)
+
+        Escolhe o vértice de menor peso (i começa olhando o primeiro índice da lista ordenada)
+
+        Podemos então encontrar o vértice pai do vértice1;
+
+        Caso não pertençam a mesma família (pais diferentes), aumenta o contador de arestas da árvore mínima,
+        e insere a aresta na arvore mínima;
+
+        No final do metodo fazemos a conexão das subárvores (trocando o pai da subárvore menor para o da subárvore maior)
+        """
+        arvoreMinima = Grafo(self.numeroDeVertices)
+
+        i = 0
+        e = 0
+
+        self.listaDeArestas = sorted(
+            self.listaDeArestas, key=lambda item: item[2])
         print("Lista de Arestas Completa Ordenada: ", self.listaDeArestas, '\n')
-                                                                                    #esse é o grande ponto do método kruskal, o que faltava no nosso código original
-                                                                                    #para conseguir executar o método, são geradas duas listas auxiliares: pai e tamSubArvore, ambas tem o tamanho = número de vértices do grafo
-        pai = []                                                                    #a lista pai armazena dentro dos seus índices (um pra cada vértice) o vértice conectado superiormente a ele (funciona meio que como uma lista encadeada)
-        tamSubArvore = []                                                           #a lista tamSubArvore mostra o tamanho das subarvores da qual cada vértice é pai
 
-        for vertice in range(self.numeroDeVertices):                                     #inicialização das listas auxiliares, botando o "pai" de cada vértice como ele próprio e o tamanho de suas subárvores como 0
+        pai = []
+        tamSubArvore = []
+
+        for vertice in range(self.numeroDeVertices):
             pai.append(vertice)
             tamSubArvore.append(0)
 
-        while e < (self.numeroDeVertices - 1):                                           #a condicional necessária lá de restrição da árvore_mínima (num de arestas = num de vértices -1)
-            vertice1, vertice2, peso = self.listaDeArestas[i]                         #escolhe o vértice de menor peso (i começa olhando o primeiro índice da lista ordenada)
-            i = i + 1                                                               #aumenta o contador lá do i
+        while e < (self.numeroDeVertices - 1):
+            vertice1, vertice2, peso = self.listaDeArestas[i]
+            i = i + 1
 
-            x = self.encontPai(pai, vertice1)                                       #encontra o vértice pai do vértice1
+            x = self.encontPai(pai, vertice1)
             y = self.encontPai(pai, vertice2)
 
-            if x != y:                                                              #caso não pertençam a mesma família(pais diferentes)
-                e = e + 1                                                           #aumenta o contador de arestas da árvore mínima
-                arvoreMinima.addAresta(vertice1, vertice2, peso)                   #insere a aresta na arvore mínima
-                H.add_edge(arvoreMinima.listaDeArestas[-1][0], arvoreMinima.listaDeArestas[-1][1])
+            if x != y:
+                e = e + 1
+                arvoreMinima.addAresta(vertice1, vertice2, peso)
+                H.add_edge(
+                    arvoreMinima.listaDeArestas[-1][0], arvoreMinima.listaDeArestas[-1][1], weight=peso)
                 print(arvoreMinima.mostrarGrafo())
-                self.conecSubArvore(pai, tamSubArvore, x, y)                        #faz a conexão das subárvores (trocando o pai da subárvore menor para o da subárvore maior)
-                #print(i, " interacao - aresta adicionada: ", arvoreMinima.listaDeArestas[-1])
+                self.conecSubArvore(pai, tamSubArvore, x, y)
 
         plt.figure("Grafo Original")
-        nx.draw_networkx(G, pos = nx.spring_layout(G), with_labels = True)
+        pos = nx.layout.planar_layout(G)
+        nx.draw(G, pos=pos, with_labels=True)
+        peso_aresta = nx.get_edge_attributes(G, "weight")
+        nx.draw_networkx_edge_labels(G, pos, peso_aresta)
 
-        plt.figure("Arvore Geradora Minima")
-        nx.draw_networkx(H, pos = nx.spring_layout(H), with_labels = True)
+        plt.figure("Arvore Geradora Minima - KRUSKAL")
+        pos = nx.layout.planar_layout(H)
+        nx.draw(H, pos=pos, with_labels=True)
+        peso_aresta = nx.get_edge_attributes(H, "weight")
+        nx.draw_networkx_edge_labels(H, pos, peso_aresta)
 
         plt.show()
         return arvoreMinima
@@ -103,4 +159,4 @@ grafo.addAresta(4, 5, 1)
 
 arvoreMinima = grafo.kruskal()
 arvoreMinima.mostrarGrafo()
-#arvoreMinima.printMatriz()
+# arvoreMinima.printMatriz()

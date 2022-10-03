@@ -14,7 +14,7 @@ class Grafo:
     def addAresta(self, vertice1, vertice2, weight):                                                #função básica de adição de aresta
         self.matrizDeAdj[vertice1][vertice2] = weight                                                #como a matriz de adj é simétrica, ele passa o mesmo peso pros índices espelhados
         self.matrizDeAdj[vertice2][vertice1] = weight 
-        G.add_edge(vertice1, vertice2)   
+        G.add_edge(vertice1, vertice2, weight = weight)   
 
     def dijkstra(self, origem):                                                                     #método de dijkstra não gera uma árvore mínima, é um método de cálculo de caminhos mínimos. Passamos como parâmetro o vértice de origem dos nossos caminhos
         D = {vertice:float('inf') for vertice in range(self.numeroDeVertices)}                           #D é a lista de caminhos para todos os vértices(que aqui são os índices) do grafo. Começamos definindo a distância para todos os vértices como infinito
@@ -58,7 +58,10 @@ class Grafo:
             print("Percurso: ", P[vertice])
 
         plt.figure("Grafo Original")
-        nx.draw_networkx(G, pos = nx.spring_layout(G), with_labels = True)
+        pos = nx.layout.planar_layout(G)
+        nx.draw(G, pos = pos, with_labels= True)
+        peso_aresta = nx.get_edge_attributes(G, "weight")
+        nx.draw_networkx_edge_labels(G, pos, peso_aresta)
 
         plt.show()
                                                                   

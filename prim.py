@@ -52,7 +52,7 @@ class Grafo:
         self.matrizDeAdj[vertice1][vertice2] = peso                                      
         self.matrizDeAdj[vertice2][vertice1] = peso
         self.listaDeArestas.append((vertice1, vertice2, peso))   
-        G.add_edge(vertice1, vertice2)          
+        G.add_edge(vertice1, vertice2, weight = peso)          
 
     def mostrarGrafo(self):                                                               
         print("\nLista de arestas completa: ", self.listaDeArestas)
@@ -60,8 +60,12 @@ class Grafo:
         for i in self.listaDeArestas:
             peso+= i[2]
         print("Peso total: ", peso, "\n")
+
         plt.figure("Grafo Original")
-        nx.draw_networkx(G, pos = nx.spring_layout(G), with_labels = True)
+        pos = nx.layout.planar_layout(G)
+        nx.draw(G, pos = pos, with_labels= True)
+        peso_aresta = nx.get_edge_attributes(G, "weight")
+        nx.draw_networkx_edge_labels(G, pos, peso_aresta)
             
 
     def printMatriz(self):                                                              
@@ -100,13 +104,16 @@ class Grafo:
             if(index >= 1):                                                              
                 arvoreMinima.adicionaAresta(comeco, fim, pesoMinimo)     
                 print(index, ' interacao - aresta percorrida: ', arvoreMinima.listaDeArestas[-1]) 
-                H.add_edge(arvoreMinima.listaDeArestas[-1][0], arvoreMinima.listaDeArestas[-1][1])           
+                H.add_edge(arvoreMinima.listaDeArestas[-1][0], arvoreMinima.listaDeArestas[-1][1], weight = pesoMinimo)           
             
             index += 1
             resultado[fim][comeco] = resultado[comeco][fim]                             
         
-        plt.figure("Arvore Geradora Minima")
-        nx.draw_networkx(H, pos = nx.spring_layout(H), with_labels = True)
+        plt.figure("Arvore Geradora Minima - PRIM")
+        pos = nx.layout.planar_layout(H)
+        nx.draw(H, pos = pos, with_labels= True)
+        peso_aresta = nx.get_edge_attributes(H, "weight")
+        nx.draw_networkx_edge_labels(H, pos, peso_aresta)
 
         return arvoreMinima          
 
