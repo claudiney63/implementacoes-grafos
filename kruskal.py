@@ -48,7 +48,7 @@ class Grafo:
         """
         if pai[i] == i:
             return i
-        return self.encontPai(pai, pai[i])
+        return self.encontrandoPai(pai, pai[i])
 
     def conecSubArvore(self, pai, size_sub_arvore, x, y):
         """
