@@ -144,18 +144,17 @@ class Grafo:
         return arvoreMinima
 
 
-grafo = Grafo(7)
+grafo = Grafo(5)
 
+grafo.maisArestas(0, 2, 4)
 grafo.maisArestas(0, 1, 3)
-grafo.maisArestas(0, 6, 2)
-grafo.maisArestas(0, 4, 7)
-grafo.maisArestas(0, 3, 4)
+grafo.maisArestas(0, 4, 2)
+grafo.maisArestas(1, 4, 4)
+grafo.maisArestas(0, 3, 7)
+grafo.maisArestas(2, 3, 3)
+grafo.maisArestas(2, 4, 6)
 grafo.maisArestas(1, 2, 5)
-grafo.maisArestas(1, 4, 10)
-grafo.maisArestas(2, 6, 4)
-grafo.maisArestas(2, 3, 6)
 grafo.maisArestas(3, 4, 1)
-grafo.maisArestas(4, 5, 1)
 
 arvoreMinima = grafo.kruskal()
 arvoreMinima.mostrarGrafo()
