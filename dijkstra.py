@@ -6,13 +6,21 @@ G = nx.Graph()
 H = nx.DiGraph()
 
 class Grafo:
-    def __init__(self, numeroDeVertices):                                                                #método construtor, recebe número de vértices
+    """
+    Método construtor, recebe número de vértices, ele exibe as arestas como uma matriz de adj, 
+    importante notar que ele inicializa os valores como -1, essa lista vai armazenar os vértices que já visitamos
+    """
+    def __init__(self, numeroDeVertices):                                                                
         self.numeroDeVertices = numeroDeVertices
-        self.matrizDeAdj = [[-1 for i in range(numeroDeVertices)] for j in range(numeroDeVertices)]            #ele exibe as arestas como uma matriz de adj, importante notar que ele inicializa os valores como -1
-        self.visitado = []                                                                           #essa lista vai armazenar os vértices que já visitamos
+        self.matrizDeAdj = [[-1 for i in range(numeroDeVertices)] for j in range(numeroDeVertices)]            
+        self.visitado = []                                                                           
 
-    def addAresta(self, vertice1, vertice2, weight):                                                #função básica de adição de aresta
-        self.matrizDeAdj[vertice1][vertice2] = weight                                                #como a matriz de adj é simétrica, ele passa o mesmo peso pros índices espelhados
+    def adicionaAresta(self, vertice1, vertice2, weight):                                               
+        """
+        Função básica de adição de aresta, como a matriz de adj é simétrica, 
+        ele passa o mesmo peso pros índices espelhados
+        """
+        self.matrizDeAdj[vertice1][vertice2] = weight                                                
         self.matrizDeAdj[vertice2][vertice1] = weight 
         G.add_edge(vertice1, vertice2, weight = weight)   
 
@@ -45,27 +53,27 @@ class Grafo:
         P = [[] for indice in range(self.numeroDeVertices)]                                           
         P[origem] = [origem]
 
-        pq = PriorityQueue()                                                                        #pq é a fila de prioridade que vamos usar nessa função
-        pq.put((0, origem))                                                                         #o vértice inicial é colocado na frente da fila (prioridade 0)
+        pq = PriorityQueue()                                                                        
+        pq.put((0, origem))                                                                         
 
         i = 0
-        while not pq.empty():                                                                      #limitador da repetição é a fila de prioridades não estar vazia
-            (dist, verticeAtual) = pq.get()                                                         #retiramos da fila o vértice que está sendo analisado atualmente e sua distância do ponto de origem
+        while not pq.empty():                                                                      
+            (dist, verticeAtual) = pq.get()                                                        
             self.visitado.append(verticeAtual)
             print(i+1, " - interacao:")
             print("vertice atual: ", verticeAtual)    
             print("Distancia: ", D)
-            print('-'*45)                                                   #adicionamos o vértice que está sendo analisado na lista de vértices visitados
+            print('-'*45)                                                   
 
-            for vizinho in range(self.numeroDeVertices):                                                 #vemos todos os possíveis vizinhos do nosso vértice atual (todos os vértices)
-                if self.matrizDeAdj[verticeAtual][vizinho] != -1:                                    #se tiver uma aresta entre eles, o valor na matriz será diferente de -1
-                    distancia = self.matrizDeAdj[verticeAtual][vizinho]            #definimos a distância para esse vizinho como o valor da interseção na matriz (peso da aresta)
+            for vizinho in range(self.numeroDeVertices):                                                 
+                if self.matrizDeAdj[verticeAtual][vizinho] != -1:                                   
+                    distancia = self.matrizDeAdj[verticeAtual][vizinho]           
                     
-                    if vizinho not in self.visitado:                                                                       #se esse vizinho ainda não estivar na lista de vértices já visitados, nós verificamos a distância
-                        distanciaAnterior = D[vizinho]                                              #vemos o custo antigo guardado para esse vizinho (inicializado como infinito ali quando declaramos D)
-                        distanciaNova = D[verticeAtual] + distancia                                 #novo custo é a distância do vértice origem até o atual + a distância desse atual até o vizinho
+                    if vizinho not in self.visitado:                                                                      
+                        distanciaAnterior = D[vizinho]                                             
+                        distanciaNova = D[verticeAtual] + distancia                                
                         
-                        if distanciaNova < distanciaAnterior:                                    #se o custo for menor, atualizamos o valor em D e colocamos a prioridade e o vértice na fila
+                        if distanciaNova < distanciaAnterior:                                   
                             pq.put((distanciaNova, vizinho))
                             P[vizinho] = P[verticeAtual].copy()
                             P[vizinho].append(vizinho)
@@ -73,7 +81,7 @@ class Grafo:
             i += 1
 
         j = 0
-        for vertice in range(len(D)):                                                               #impressão das distâncias contidas em D (retorno da função de dijkstra)
+        for vertice in range(len(D)):                                                               
             cont = 0
             print("\nDistancia do vertice", origem, "para o vertice", vertice, "eh", D.get(j))
             j += 1
@@ -102,12 +110,12 @@ class Grafo:
 
 grafo = Grafo(6)
 
-grafo.addAresta(0, 1, 4)
-grafo.addAresta(0, 2, 2)
-grafo.addAresta(1, 2, 3)
-grafo.addAresta(1, 3, 3)
-grafo.addAresta(1, 4, 5)
-grafo.addAresta(2, 4, 2)
-grafo.addAresta(3, 4, 2)
-grafo.addAresta(5, 4, 10)
-grafo.dijkstra(3, 5)
+grafo.adicionaAresta(0, 1, 4)
+grafo.adicionaAresta(0, 2, 2)
+grafo.adicionaAresta(1, 2, 3)
+grafo.adicionaAresta(1, 3, 3)
+grafo.adicionaAresta(1, 4, 5)
+grafo.adicionaAresta(2, 4, 2)
+grafo.adicionaAresta(3, 4, 2)
+grafo.adicionaAresta(5, 4, 10)
+grafo.dijkstra(3, 0)
