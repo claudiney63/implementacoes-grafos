@@ -146,6 +146,7 @@ class Grafo:
 
 grafo = Grafo(5)
 
+<<<<<<< HEAD
 grafo.adicionaAresta(0, 2, 4)
 grafo.adicionaAresta(0, 1, 3)
 grafo.adicionaAresta(0, 4, 2)
@@ -155,6 +156,17 @@ grafo.adicionaAresta(2, 3, 3)
 grafo.adicionaAresta(2, 4, 6)
 grafo.adicionaAresta(1, 2, 5)
 grafo.adicionaAresta(3, 4, 1)
+=======
+grafo.maisArestas(0, 2, 4)
+grafo.maisArestas(0, 1, 3)
+grafo.maisArestas(0, 4, 2)
+grafo.maisArestas(1, 4, 4)
+grafo.maisArestas(0, 3, 7)
+grafo.maisArestas(2, 3, 3)
+grafo.maisArestas(2, 4, 6)
+grafo.maisArestas(1, 2, 5)
+grafo.maisArestas(3, 4, 1)
+>>>>>>> 966fe1b72e4c0df64add139dea0a4a6960ff5ec7
 
 arvoreMinima = grafo.kruskal()
 arvoreMinima.mostrarGrafo()
