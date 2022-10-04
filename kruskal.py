@@ -21,7 +21,7 @@ class Grafo:
                             for fileira in range(numeroDeVertices)]
         self.listaDeArestas = []
 
-    def addAresta(self, vertice1, vertice2, peso):
+    def maisArestas(self, vertice1, vertice2, peso):
         self.matrizDeAdj[vertice1][vertice2] = peso
         self.matrizDeAdj[vertice2][vertice1] = peso
         self.listaDeArestas.append((vertice1, vertice2, peso))
@@ -36,11 +36,11 @@ class Grafo:
         print('-------------------------------------------')
         return ''
 
-    def printMatriz(self):
+    def printaMatriz(self):
         for i in range(self.numeroDeVertices):
             print(self.matrizDeAdj[i])
 
-    def encontPai(self, pai, i):
+    def encontrandoPai(self, pai, i):
         """
         Método para encontrar o pai de 
         um vértice. Passa como parâmetro a lista auxiliar de pais para quando encontra o 
@@ -50,7 +50,7 @@ class Grafo:
             return i
         return self.encontPai(pai, pai[i])
 
-    def conecSubArvore(self, pai, tamSubArvore, x, y):
+    def conecSubArvore(self, pai, size_sub_arvore, x, y):
         """
         Método utilizado para conectar subárvores diferentes;
 
@@ -59,15 +59,15 @@ class Grafo:
         Caso ambas as subarvores tenham o mesmo tamanho, a primeira é escolhida automaticamente 
         como pai da segunda e o tamanho da subárvore aumenta;
         """
-        xraiz = self.encontPai(pai, x)
-        yraiz = self.encontPai(pai, y)
-        if tamSubArvore[xraiz] < tamSubArvore[yraiz]:
+        xraiz = self.encontrandoPai(pai, x)
+        yraiz = self.encontrandoPai(pai, y)
+        if size_sub_arvore[xraiz] < size_sub_arvore[yraiz]:
             pai[xraiz] = yraiz
-        elif tamSubArvore[xraiz] > tamSubArvore[yraiz]:
+        elif size_sub_arvore[xraiz] > size_sub_arvore[yraiz]:
             pai[yraiz] = xraiz
         else:
             pai[yraiz] = xraiz
-            tamSubArvore[xraiz] += 1
+            size_sub_arvore[xraiz] += 1
 
     def kruskal(self):
         """
@@ -100,33 +100,33 @@ class Grafo:
         arvoreMinima = Grafo(self.numeroDeVertices)
 
         i = 0
-        e = 0
+        j = 0
 
         self.listaDeArestas = sorted(
             self.listaDeArestas, key=lambda item: item[2])
         print("Lista de Arestas Completa Ordenada: ", self.listaDeArestas, '\n')
 
         pai = []
-        tamSubArvore = []
+        size_sub_arvore = []
 
         for vertice in range(self.numeroDeVertices):
             pai.append(vertice)
-            tamSubArvore.append(0)
+            size_sub_arvore.append(0)
 
-        while e < (self.numeroDeVertices - 1):
+        while j < (self.numeroDeVertices - 1):
             vertice1, vertice2, peso = self.listaDeArestas[i]
             i = i + 1
 
-            x = self.encontPai(pai, vertice1)
-            y = self.encontPai(pai, vertice2)
+            x = self.encontrandoPai(pai, vertice1)
+            y = self.encontrandoPai(pai, vertice2)
 
             if x != y:
-                e = e + 1
-                arvoreMinima.addAresta(vertice1, vertice2, peso)
+                j = j + 1
+                arvoreMinima.maisArestas(vertice1, vertice2, peso)
                 H.add_edge(
                     arvoreMinima.listaDeArestas[-1][0], arvoreMinima.listaDeArestas[-1][1], weight=peso)
                 print(arvoreMinima.mostrarGrafo())
-                self.conecSubArvore(pai, tamSubArvore, x, y)
+                self.conecSubArvore(pai, size_sub_arvore, x, y)
 
         plt.figure("Grafo Original")
         pos = nx.layout.planar_layout(G)
@@ -146,16 +146,16 @@ class Grafo:
 
 grafo = Grafo(7)
 
-grafo.addAresta(0, 1, 3)
-grafo.addAresta(0, 6, 2)
-grafo.addAresta(0, 4, 7)
-grafo.addAresta(0, 3, 4)
-grafo.addAresta(1, 2, 5)
-grafo.addAresta(1, 4, 10)
-grafo.addAresta(2, 6, 4)
-grafo.addAresta(2, 3, 6)
-grafo.addAresta(3, 4, 1)
-grafo.addAresta(4, 5, 1)
+grafo.maisArestas(0, 1, 3)
+grafo.maisArestas(0, 6, 2)
+grafo.maisArestas(0, 4, 7)
+grafo.maisArestas(0, 3, 4)
+grafo.maisArestas(1, 2, 5)
+grafo.maisArestas(1, 4, 10)
+grafo.maisArestas(2, 6, 4)
+grafo.maisArestas(2, 3, 6)
+grafo.maisArestas(3, 4, 1)
+grafo.maisArestas(4, 5, 1)
 
 arvoreMinima = grafo.kruskal()
 arvoreMinima.mostrarGrafo()
