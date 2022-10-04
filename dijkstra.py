@@ -16,10 +16,33 @@ class Grafo:
         self.matrizDeAdj[vertice2][vertice1] = weight 
         G.add_edge(vertice1, vertice2, weight = weight)   
 
-    def dijkstra(self, origem, destino):                                                                     #método de dijkstra não gera uma árvore mínima, é um método de cálculo de caminhos mínimos. Passamos como parâmetro o vértice de origem dos nossos caminhos
-        D = {vertice:float('inf') for vertice in range(self.numeroDeVertices)}                           #D é a lista de caminhos para todos os vértices(que aqui são os índices) do grafo. Começamos definindo a distância para todos os vértices como infinito
-        D[origem] = 0                                                                               #definimos a distância para o vértice inicial como 0 (porque partimos dele)
-        P = [[] for indice in range(self.numeroDeVertices)]                                              #lista de percursos (teste)---------------
+    def dijkstra(self, origem, destino):  
+        """
+        Método de dijkstra não gera uma árvore mínima, é um método de cálculo de caminhos mínimos. 
+        Passamos como parâmetro o vértice de origem dos nossos caminhos.
+        
+        D é a lista de caminhos para 
+        todos os vértices(que aqui são os índices) do grafo. Começamos definindo a distância para todos os vértices como infinito
+        definimos a distância para o vértice inicial como 0 (porque partimos dele).
+
+        O vértice inicial é colocado na frente da fila (prioridade 0),
+        limitador da repetição é a fila de prioridades não estar vazia,
+        retiramos da fila o vértice que está sendo analisado atualmente e sua distância do ponto de origem.
+
+        Adicionamos o vértice que está sendo analisado na lista de vértices visitados,
+        vemos todos os possíveis vizinhos do nosso vértice atual (todos os vértices),
+        se tiver uma aresta entre eles, o valor na matriz será diferente de -1,
+        definimos a distância para esse vizinho como o valor da interseção na matriz (peso da aresta).
+
+        Se esse vizinho ainda não estivar na lista de vértices já visitados, nós verificamos a distância,
+        se obeserva o custo antigo guardado para esse vizinho (inicializado como infinito quando se declara D).
+
+        Um novo custo é a distância do vértice origem até o atual + a distância desse atual até o vizinho,
+        se o custo for menor, atualizamos o valor em D e colocamos a prioridade e o vértice na fila.
+        """                                                                  
+        D = {vertice:float('inf') for vertice in range(self.numeroDeVertices)}                           
+        D[origem] = 0                                                                               
+        P = [[] for indice in range(self.numeroDeVertices)]                                           
         P[origem] = [origem]
 
         pq = PriorityQueue()                                                                        #pq é a fila de prioridade que vamos usar nessa função
