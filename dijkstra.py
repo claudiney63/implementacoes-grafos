@@ -1,9 +1,9 @@
-from queue import PriorityQueue                                                                     #primeira mudança desse código pros outros: finalmente temos que importar uma classe de um módulo. Brabo. É uma fila de prioridade
+from queue import PriorityQueue                                                             
 import networkx as nx
 import matplotlib.pyplot as plt
 
 G = nx.Graph()
-H = nx.Graph()
+H = nx.DiGraph()
 
 class Grafo:
     def __init__(self, numeroDeVertices):                                                                #método construtor, recebe número de vértices
@@ -16,7 +16,7 @@ class Grafo:
         self.matrizDeAdj[vertice2][vertice1] = weight 
         G.add_edge(vertice1, vertice2, weight = weight)   
 
-    def dijkstra(self, origem):                                                                     #método de dijkstra não gera uma árvore mínima, é um método de cálculo de caminhos mínimos. Passamos como parâmetro o vértice de origem dos nossos caminhos
+    def dijkstra(self, origem, destino):                                                                     #método de dijkstra não gera uma árvore mínima, é um método de cálculo de caminhos mínimos. Passamos como parâmetro o vértice de origem dos nossos caminhos
         D = {vertice:float('inf') for vertice in range(self.numeroDeVertices)}                           #D é a lista de caminhos para todos os vértices(que aqui são os índices) do grafo. Começamos definindo a distância para todos os vértices como infinito
         D[origem] = 0                                                                               #definimos a distância para o vértice inicial como 0 (porque partimos dele)
         P = [[] for indice in range(self.numeroDeVertices)]                                              #lista de percursos (teste)---------------
@@ -47,7 +47,6 @@ class Grafo:
                             P[vizinho] = P[verticeAtual].copy()
                             P[vizinho].append(vizinho)
                             D[vizinho] = distanciaNova
-
             i += 1
 
         j = 0
@@ -56,6 +55,18 @@ class Grafo:
             print("\nDistancia do vertice", origem, "para o vertice", vertice, "eh", D.get(j))
             j += 1
             print("Percurso: ", P[vertice])
+
+            if vertice == destino:
+                peso_ant = 0
+                for i in range(len(P[vertice])-1):
+                    H.add_edge(P[vertice][i], P[vertice][i+1], weight = (D.get(P[vertice][i+1])-peso_ant))
+                    peso_ant = D.get(P[vertice][i+1])
+
+        plt.figure("Arvore Geradora Minima - DIJKSTRA")
+        pos = nx.layout.planar_layout(H)
+        nx.draw(H, pos = pos, with_labels= True)
+        peso_aresta = nx.get_edge_attributes(H, "weight")
+        nx.draw_networkx_edge_labels(H, pos, peso_aresta)
 
         plt.figure("Grafo Original")
         pos = nx.layout.planar_layout(G)
@@ -66,7 +77,7 @@ class Grafo:
         plt.show()
                                                                   
 
-grafo = Grafo(5)
+grafo = Grafo(6)
 
 grafo.addAresta(0, 1, 4)
 grafo.addAresta(0, 2, 2)
@@ -75,9 +86,5 @@ grafo.addAresta(1, 3, 3)
 grafo.addAresta(1, 4, 5)
 grafo.addAresta(2, 4, 2)
 grafo.addAresta(3, 4, 2)
-#grafo.addAresta(5, 4, 10)
-grafo.dijkstra(0)
-
-# plt.figure("Arvore Geradora Minima")
-# nx.draw_networkx(H, pos = nx.spring_layout(H), with_labels = True)
-
+grafo.addAresta(5, 4, 10)
+grafo.dijkstra(3, 5)
