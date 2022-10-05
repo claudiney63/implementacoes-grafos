@@ -93,7 +93,7 @@ class Grafo:
                     H.add_edge(P[vertice][i], P[vertice][i+1], weight = (D.get(P[vertice][i+1])-peso_ant))
                     peso_ant = D.get(P[vertice][i+1])
 
-        plt.figure("Arvore Geradora Minima - DIJKSTRA")
+        plt.figure("Caminho Minimo - DIJKSTRA")
         pos = nx.layout.planar_layout(H)
         nx.draw(H, pos = pos, with_labels= True)
         peso_aresta = nx.get_edge_attributes(H, "weight")
